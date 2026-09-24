@@ -1,0 +1,14 @@
+[
+  {
+    "function": "x**2 + 3*x + 2",
+    "operation": "derivative"
+  },
+  {
+    "function": "x**3 + x",
+    "operation": "integral"
+  },
+  {
+    "function": "sin(x) + x",
+    "operation": "derivative"
+  }
+]
