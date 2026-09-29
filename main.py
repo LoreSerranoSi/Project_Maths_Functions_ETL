@@ -1,5 +1,8 @@
 import os
 from src.extract import extract_data
+from src.transform import *
+from src.load import load_data
+
 
 def run_etl():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,6 +16,32 @@ def run_etl():
         print(f"Registro {i}:")
         print(record)
         print("-" * 40)
+
+        # =========================
+        # ETAPA TRANSFORM + LOAD
+        # =========================
+
+        expression = record["function"]
+        operation = record["operation"]
+
+        if operation == "derivative":
+            result = calculate_derivative(expression, "x")
+
+        elif operation == "integral":
+            result = calculate_integral(expression, "x")
+
+        else:
+            print("Operación no soportada")
+            continue
+
+        load_data([
+            {
+                "expression": expression,
+                "operation": operation,
+                "result": result
+            }
+        ])
+
 
 if __name__ == "__main__":
     run_etl()
