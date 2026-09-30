@@ -5,6 +5,9 @@ from src.load import load_data
 
 
 def run_etl():
+    #=========================#
+    # ETAPA EXTRACT
+    #=========================#
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, "data", "raw", "input.json")
 
@@ -18,7 +21,7 @@ def run_etl():
         print("-" * 40)
 
         # =========================
-        # ETAPA TRANSFORM + LOAD
+        # ETAPA TRANSFORM
         # =========================
 
         expression = record["function"]
@@ -33,6 +36,10 @@ def run_etl():
         else:
             print("Operación no soportada")
             continue
+
+        # =========================
+        # ETAPA LOAD
+        #=========================
 
         load_data([
             {

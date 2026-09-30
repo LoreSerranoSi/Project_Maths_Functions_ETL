@@ -33,3 +33,27 @@ def calculate_integral(expression, variable):
     except Exception as e:
         return f"Error: {str(e)}"
 
+
+def process_data(data):
+    results = []
+
+    for item in data:
+        expression = item.get("function")
+        operation = item.get("operation")
+
+        if operation == "derivative":
+            result = calculate_derivative(expression, "x")
+
+        elif operation == "integral":
+            result = calculate_integral(expression, "x")
+
+        else:
+            result = "Unsupported operation"
+
+        results.append({
+            "function": expression,
+            "operation": operation,
+            "result": result
+        })
+
+    return results
