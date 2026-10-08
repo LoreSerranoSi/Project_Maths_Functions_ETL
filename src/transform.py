@@ -37,18 +37,24 @@ def calculate_integral(expression, variable):
 def process_data(data):
     results = []
 
+    
     for item in data:
         expression = item.get("function")
         operation = item.get("operation")
 
-        if operation == "derivative":
+        # Validate function
+        if not isinstance(expression, str) or not expression.strip():
+            result = "Error: function must be a non-empty string"
+
+        # Validate operation
+        elif operation not in ("derivative", "integral"):
+            result = "Error: unsupported operation"
+
+        elif operation == "derivative":
             result = calculate_derivative(expression, "x")
 
         elif operation == "integral":
             result = calculate_integral(expression, "x")
-
-        else:
-            result = "Unsupported operation"
 
         results.append({
             "function": expression,

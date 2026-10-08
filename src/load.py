@@ -1,15 +1,18 @@
 import sqlite3
 from datetime import datetime
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 
-#DB_PATH = "data/etl.db"
+# DB_PATH = "data/etl.db"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "data", "etl.db")
 
+
 def load_data(results):
     try:
-        # 🔥 Asegura que la carpeta exista
+        # Asegura que la carpeta exista
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
         conn = sqlite3.connect(DB_PATH)
@@ -25,22 +28,48 @@ def load_data(results):
             )
         """)
 
+
+        inserted = 0
+        duplicated = 0
         for item in results:
+
             cursor.execute("""
-                INSERT INTO results (function, operation, result, timestamp)
-                VALUES (?, ?, ?, ?)
+                SELECT 1 FROM results
+                WHERE function = ?
+                AND operation = ?
+                AND result = ?
             """, (
                 item["function"],
                 item["operation"],
-                item["result"],
-                datetime.now().isoformat()
+                item["result"]
             ))
 
+            if cursor.fetchone() is None:
+                cursor.execute("""
+                    INSERT INTO results (function, operation, result, timestamp)
+                    VALUES (?, ?, ?, ?)
+                """, (
+                    item["function"],
+                    item["operation"],
+                    item["result"],
+                    datetime.now().isoformat()
+                ))
+                inserted += 1
+            else:
+                duplicated += 1
+                logger.warning(
+                    f"⚠️ Registro duplicado omitido: "
+                    f"{item['function']} - {item['operation']}"
+                )
+
         conn.commit()
-        print("💾 Datos insertados correctamente")
+        logger.info(
+            f"💾 LOAD FINALIZADO: {inserted} insertados, "
+            f"{duplicated} duplicados"
+        )
 
     except Exception as e:
-        print(f"❌ Error en LOAD: {e}")
+        logger.error(f"❌ Error en LOAD: {e}")
 
     finally:
         if 'conn' in locals():
