@@ -1,1 +1,28 @@
 data/*.db
+
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Archivos de editores
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Archivos temporales
+.DS_Store
+Thumbs.db
